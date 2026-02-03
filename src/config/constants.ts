@@ -20,6 +20,8 @@ export const CONSTANTS = {
     HOME: "/",
     LOGIN: "/login",
     REGISTER: "/register",
+    FACE_LOGIN: "/face-login",
+    FACE_REGISTER: "/face-register",
     DASHBOARD: "/dashboard",
     NOT_FOUND: "/404",
   },

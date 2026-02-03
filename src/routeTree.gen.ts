@@ -12,9 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as MainRouteImport } from './routes/_main'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MainProfileRouteImport } from './routes/_main/profile'
+import { Route as MainFaceRegisterRouteImport } from './routes/_main/face-register'
 import { Route as MainDashboardRouteImport } from './routes/_main/dashboard'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as AuthFaceLoginRouteImport } from './routes/_auth/face-login'
 
 const MainRoute = MainRouteImport.update({
   id: '/_main',
@@ -28,6 +31,16 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const MainProfileRoute = MainProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainFaceRegisterRoute = MainFaceRegisterRouteImport.update({
+  id: '/face-register',
+  path: '/face-register',
+  getParentRoute: () => MainRoute,
 } as any)
 const MainDashboardRoute = MainDashboardRouteImport.update({
   id: '/dashboard',
@@ -44,41 +57,72 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthFaceLoginRoute = AuthFaceLoginRouteImport.update({
+  id: '/face-login',
+  path: '/face-login',
+  getParentRoute: () => AuthRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/face-login': typeof AuthFaceLoginRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/dashboard': typeof MainDashboardRoute
+  '/face-register': typeof MainFaceRegisterRoute
+  '/profile': typeof MainProfileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/face-login': typeof AuthFaceLoginRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/dashboard': typeof MainDashboardRoute
+  '/face-register': typeof MainFaceRegisterRoute
+  '/profile': typeof MainProfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
   '/_main': typeof MainRouteWithChildren
+  '/_auth/face-login': typeof AuthFaceLoginRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_main/dashboard': typeof MainDashboardRoute
+  '/_main/face-register': typeof MainFaceRegisterRoute
+  '/_main/profile': typeof MainProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/face-login'
+    | '/login'
+    | '/register'
+    | '/dashboard'
+    | '/face-register'
+    | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/dashboard'
+  to:
+    | '/'
+    | '/face-login'
+    | '/login'
+    | '/register'
+    | '/dashboard'
+    | '/face-register'
+    | '/profile'
   id:
     | '__root__'
     | '/'
     | '/_auth'
     | '/_main'
+    | '/_auth/face-login'
     | '/_auth/login'
     | '/_auth/register'
     | '/_main/dashboard'
+    | '/_main/face-register'
+    | '/_main/profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -110,6 +154,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_main/profile': {
+      id: '/_main/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof MainProfileRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/face-register': {
+      id: '/_main/face-register'
+      path: '/face-register'
+      fullPath: '/face-register'
+      preLoaderRoute: typeof MainFaceRegisterRouteImport
+      parentRoute: typeof MainRoute
+    }
     '/_main/dashboard': {
       id: '/_main/dashboard'
       path: '/dashboard'
@@ -131,15 +189,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/face-login': {
+      id: '/_auth/face-login'
+      path: '/face-login'
+      fullPath: '/face-login'
+      preLoaderRoute: typeof AuthFaceLoginRouteImport
+      parentRoute: typeof AuthRoute
+    }
   }
 }
 
 interface AuthRouteChildren {
+  AuthFaceLoginRoute: typeof AuthFaceLoginRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthFaceLoginRoute: AuthFaceLoginRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
 }
@@ -148,10 +215,14 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface MainRouteChildren {
   MainDashboardRoute: typeof MainDashboardRoute
+  MainFaceRegisterRoute: typeof MainFaceRegisterRoute
+  MainProfileRoute: typeof MainProfileRoute
 }
 
 const MainRouteChildren: MainRouteChildren = {
   MainDashboardRoute: MainDashboardRoute,
+  MainFaceRegisterRoute: MainFaceRegisterRoute,
+  MainProfileRoute: MainProfileRoute,
 }
 
 const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren)

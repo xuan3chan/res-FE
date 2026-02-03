@@ -1,0 +1,47 @@
+.overlayContainer {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.webcam {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.guideOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guideShape {
+  width: 60%;
+  height: 70%;
+  border: 4px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+}
+
+.previewContainer {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.previewImage {
+  width: 100%;
+  border-radius: 1rem;
+}

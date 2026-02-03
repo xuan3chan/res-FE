@@ -40,11 +40,11 @@ export const sidebarData: SidebarData = {
           icon: LayoutDashboard,
         },
         {
-          title: "Authentication",
+          title: "Thông tin cá nhân",
           icon: GalleryVerticalEnd,
           items: [
-            { title: "Login", url: "/login" },
-            { title: "Register", url: "/register" },
+            { title: "Thông tin cá nhân", url: "/profile" },
+            { title: "Thay đổi mật khẩu", url: "/change-password" },
           ],
         },
       ],
@@ -53,7 +53,7 @@ export const sidebarData: SidebarData = {
       title: "Settings",
       items: [
         {
-          title: "Settings",
+          title: "Settings",  
           url: "/settings",
           icon: Settings,
         },

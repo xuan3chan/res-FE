@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/sidebar'
 import { NavGroup } from './nav-group'
 import { sidebarData } from './data/sidebar-data'
+import { NavUser } from './nav-user'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -28,9 +29,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <div className="p-4 text-xs text-muted-foreground">
-          &copy; 2024 ResApp
-        </div>
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -1,75 +1,127 @@
-import { type FormEvent, useState } from 'react'
+import { useState } from 'react'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@tanstack/react-router'
-import { Button, Input, Label } from '@/components'
+import { Loader2, LogIn } from 'lucide-react'
 import { CONSTANTS } from '@/config'
 import { useLogin } from '../hooks'
+import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/password-input'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+
+const formSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z
+    .string()
+    .min(1, 'Please enter your password')
+    .min(6, 'Password must be at least 6 characters long'),
+})
 
 export function LoginForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const { mutate: login, isPending, error } = useLogin()
+  const [isLoading, setIsLoading] = useState(false)
+  const { mutate: login, error } = useLogin()
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    login({ email, password })
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
+
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    setIsLoading(true)
+    login(data, {
+      onSettled: () => setIsLoading(false),
+    })
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div className="text-center">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Welcome Back</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to your account to continue</p>
-      </div>
+    <Card className="gap-4">
+      <CardHeader>
+        <CardTitle className="text-lg tracking-tight">Sign in</CardTitle>
+        <CardDescription>
+          Enter your email and password below to <br />
+          log into your account
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+            {error && (
+              <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md dark:bg-red-900/20 dark:border-red-900/30 dark:text-red-400">
+                {(error as Error).message || 'Login failed. Please try again.'}
+              </div>
+            )}
 
-      {error && (
-        <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md dark:bg-red-900/20 dark:border-red-900/30 dark:text-red-400">
-          {(error as Error).message || 'Login failed. Please try again.'}
-        </div>
-      )}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="name@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-      <div className="grid gap-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="name@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <PasswordInput placeholder="********" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-      <div className="grid gap-2">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
+            <Button className="mt-2 w-full" disabled={isLoading}>
+              {isLoading ? <Loader2 className="animate-spin" /> : <LogIn />}
+              Sign in
+            </Button>
 
-      <Button type="submit" disabled={isPending} className="w-full">
-        {isPending ? 'Signing in...' : 'Sign In'}
-      </Button>
+            <div className="relative my-2">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
 
-      <Button 
-        type="button" 
-        variant="outline" 
-        className="w-full border-dashed"
-        onClick={() => login({ email: 'admin@resapp.com', password: 'password' })}
-      >
-        Bypass with Mock Login
-      </Button>
-
-      <p className="text-sm text-center text-gray-500">
-        Don't have an account?
-        <Link to={CONSTANTS.ROUTES.REGISTER} className="ml-1 font-medium text-primary hover:underline">
-          Sign up
-        </Link>
-      </p>
-    </form>
+            <Button variant="outline" type="button" disabled={isLoading} asChild>
+              <Link to={CONSTANTS.ROUTES.FACE_LOGIN}>
+                Face Login
+              </Link>
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   )
 }

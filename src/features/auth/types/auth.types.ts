@@ -2,6 +2,11 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  username?: string;
+  isActive?: boolean;
+  hasFaceRegistered?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
   avatar?: string;
   role: "admin" | "user";
 }
@@ -20,7 +25,7 @@ export interface RegisterPayload {
 export interface AuthResponse {
   user: User;
   accessToken: string;
-  refreshToken: string;
+  refreshToken?: string;
 }
 
 export interface TokenPayload {

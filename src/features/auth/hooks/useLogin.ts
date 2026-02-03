@@ -12,26 +12,13 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: async (payload: LoginPayload) => {
-      try {
-        return await authApi.login(payload);
-      } catch (error) {
-        console.warn("API Login failed, using bypass/mock data", error);
-        // Bypass logic: Return mock data if API fails
-        return {
-          user: {
-            id: "mock-id",
-            email: payload.email,
-            name: "Mock User",
-            role: "admin" as const,
-          },
-          accessToken: "mock-access-token",
-          refreshToken: "mock-refresh-token",
-        };
-      }
+      return await authApi.login(payload);
     },
     onSuccess: (data) => {
       storage.set(CONSTANTS.STORAGE_KEYS.ACCESS_TOKEN, data.accessToken);
-      storage.set(CONSTANTS.STORAGE_KEYS.REFRESH_TOKEN, data.refreshToken);
+      if (data.refreshToken) {
+        storage.set(CONSTANTS.STORAGE_KEYS.REFRESH_TOKEN, data.refreshToken);
+      }
       setUser(data.user);
       navigate({ to: CONSTANTS.ROUTES.DASHBOARD });
     },

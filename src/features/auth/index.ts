@@ -2,10 +2,15 @@
 // Only import from this file outside of the auth feature
 
 // Components
-export { LoginForm, RegisterForm } from "./components";
+export {
+  LoginForm,
+  RegisterForm,
+  FaceRegistration,
+  FaceLogin,
+} from "./components";
 
 // Hooks
-export { useLogin, useRegister } from "./hooks";
+export { useLogin, useRegister, useFaceRegister, useFaceLogin } from "./hooks";
 
 // Types
 export type {
@@ -14,6 +19,9 @@ export type {
   RegisterPayload,
   AuthResponse,
   TokenPayload,
+  FaceLoginPayload,
+  FaceLoginResponse,
+  FaceRegistrationResponse,
 } from "./types";
 
 // API
