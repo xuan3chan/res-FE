@@ -10,8 +10,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useFaceLogin } from "../hooks";
-import { Loader2, RefreshCw, Camera, ArrowLeft } from "lucide-react";
+import { Loader2, RefreshCw, Camera, ArrowLeft, AlertCircle } from "lucide-react";
 import type { ChallengeType } from "../types";
 import { cn } from "@/lib/utils";
 import { CONSTANTS } from "@/config";
@@ -19,8 +20,8 @@ import styles from "./FaceLogin.module.css";
 
 const CHALLENGES: { type: ChallengeType; text: string }[] = [
   { type: "BLINK", text: "Please blink twice" },
-  { type: "TURN_HEAD", text: "Turn your head left then right" },
-  { type: "OPEN_MOUTH", text: "Please open your mouth" },
+  // { type: "TURN_HEAD", text: "Turn your head left then right" },
+  // { type: "OPEN_MOUTH", text: "Please open your mouth" },
 ];
 
 export function FaceLogin() {
@@ -29,7 +30,7 @@ export function FaceLogin() {
   const [isCapturing, setIsCapturing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [cameraReady, setCameraReady] = useState(false);
-  const { mutate: faceLogin, isPending } = useFaceLogin();
+  const { mutate: faceLogin, isPending, isError, error, data } = useFaceLogin();
 
   const startChallenge = useCallback(() => {
     const randomChallenge =
@@ -67,6 +68,13 @@ export function FaceLogin() {
           clearInterval(interval);
           setIsCapturing(false);
 
+          // Debug logging for Liveness Check
+          console.log("[FaceLogin] Capture complete. Sending payload:", {
+            framesCount: frames.length,
+            challengeType: challenge.type,
+            challengePassed: true,
+          });
+
           faceLogin({
             frames,
             challengeType: challenge.type,
@@ -92,6 +100,30 @@ export function FaceLogin() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {isError && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {(error as any)?.response?.data?.message ||
+                (error as any)?.message ||
+                "Authentication failed"}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {data &&
+          !isError &&
+          data.decision !== "LOGIN_SUCCESS" &&
+          data.decision !== "REQUIRE_STEP_UP" && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Access Denied</AlertTitle>
+              <AlertDescription>
+                {data.message || "Face login denied"}
+              </AlertDescription>
+            </Alert>
+          )}
         <div className={styles.webcamContainer}>
           <Webcam
             audio={false}

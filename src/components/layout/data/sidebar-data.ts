@@ -40,11 +40,10 @@ export const sidebarData: SidebarData = {
           icon: LayoutDashboard,
         },
         {
-          title: "Thông tin cá nhân",
+          title: "Profile",
           icon: GalleryVerticalEnd,
           items: [
-            { title: "Thông tin cá nhân", url: "/profile" },
-            { title: "Thay đổi mật khẩu", url: "/change-password" },
+            { title: "Profile", url: "/profile" },
           ],
         },
       ],
